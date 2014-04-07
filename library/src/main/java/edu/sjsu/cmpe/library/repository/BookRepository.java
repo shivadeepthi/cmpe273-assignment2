@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import edu.sjsu.cmpe.library.STOMP.Listener;
 import edu.sjsu.cmpe.library.domain.Book;
 
 public class BookRepository implements BookRepositoryInterface {
@@ -56,10 +57,10 @@ public class BookRepository implements BookRepositoryInterface {
      * 
      * @return a new incremental ISBN number
      */
-    private final Long generateISBNKey() {
+ /*   private final Long generateISBNKey() {
 	// increment existing isbnKey and return the new value
 	return Long.valueOf(++isbnKey);
-    }
+    }*/
 
     /**
      * This will auto-generate unique ISBN for new books.
@@ -68,12 +69,13 @@ public class BookRepository implements BookRepositoryInterface {
     public Book saveBook(Book newBook) {
 	checkNotNull(newBook, "newBook instance must not be null");
 	// Generate new ISBN
-	Long isbn = generateISBNKey();
-	newBook.setIsbn(isbn);
+	
+	//newBook.setIsbn(isbn);
 	// TODO: create and associate other fields such as author
-
+   
+    
 	// Finally, save the new book into the map
-	bookInMemoryMap.putIfAbsent(isbn, newBook);
+	bookInMemoryMap.putIfAbsent(newBook.getIsbn(), newBook);
 
 	return newBook;
     }

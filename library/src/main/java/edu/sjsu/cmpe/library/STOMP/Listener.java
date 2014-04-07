@@ -27,6 +27,7 @@ public class Listener implements MessageListener {
 	private static String title;
 	private static  String category;
 	private  static URL coverimage=null;
+	private Book book=null;
 
 	public Listener(){
 		System.out.println("i am here i listener");
@@ -47,23 +48,25 @@ public class Listener implements MessageListener {
 	        		Long isbn=Long.valueOf(tmessage[0]);
 	        		System.out.println(isbn+"  isbn");
 	        		Status status=Status.available;
-	        		System.out.println(status);
-	        		Book book=bookRepository.getBookByISBN(isbn);
+	        		//System.out.println(status);
+	        		book=bookRepository.getBookByISBN(isbn);
 	        		if(book!=null && book.getStatus().equals(Status.lost) ){
 	        			book.setStatus(status);
 	        			System.out.println("changed the status of lost book to available:"+book.getIsbn());
 	        		}else{
+	        			System.out.println("i am creating new book");
 	        			if(book==null){
 		        			title=String.valueOf(tmessage[1]);
 		        		    category=String.valueOf(tmessage[2]);
 		        		     coverimage=new URL("http:"+tmessage[3]);
-		        		    book=new Book();
-		        		    book.setIsbn(isbn);
-		        		    book.setTitle(title);
-		        		    book.setCategory(category);
-		        		    book.setCoverimage(coverimage);
-		        		    book.setStatus(status);
-		        		    bookRepository.saveBook(book);
+		        		    Book book1=new Book();
+		        		    book1.setIsbn(isbn.longValue());
+		        		    book1.setTitle(title);
+		        		    book1.setCategory(category);
+		        		    book1.setCoverimage(coverimage);
+		        		    book1.setStatus(status);
+		        		    System.out.println("storing new book");
+		        		    bookRepository.saveBook(book1);
 		        			
 		        		}else{
 	        			System.out.println("book already available in library");
