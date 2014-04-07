@@ -1,5 +1,9 @@
 package edu.sjsu.cmpe.library.api.resources;
 
+import java.net.MalformedURLException;
+
+
+import javax.jms.JMSException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -17,6 +21,7 @@ import javax.ws.rs.core.Response;
 import com.yammer.dropwizard.jersey.params.LongParam;
 import com.yammer.metrics.annotation.Timed;
 
+import edu.sjsu.cmpe.library.STOMP.ApolloStomp;
 import edu.sjsu.cmpe.library.domain.Book;
 import edu.sjsu.cmpe.library.domain.Book.Status;
 import edu.sjsu.cmpe.library.dto.BookDto;
@@ -30,6 +35,7 @@ import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
 public class BookResource {
     /** bookRepository instance */
     private final BookRepositoryInterface bookRepository;
+    private ApolloStomp apolloStomp;
 
     /**
      * BookResource constructor
@@ -37,8 +43,9 @@ public class BookResource {
      * @param bookRepository
      *            a BookRepository instance
      */
-    public BookResource(BookRepositoryInterface bookRepository) {
+    public BookResource(BookRepositoryInterface bookRepository,ApolloStomp apolloStomp) {
 	this.bookRepository = bookRepository;
+	this.apolloStomp=apolloStomp;
     }
 
     @GET
@@ -85,9 +92,16 @@ public class BookResource {
     @Path("/{isbn}")
     @Timed(name = "update-book-status")
     public Response updateBookStatus(@PathParam("isbn") LongParam isbn,
-	    @DefaultValue("available") @QueryParam("status") Status status) {
+	    @DefaultValue("available") @QueryParam("status") Status status) throws Exception {
+    	System.out.println("i am here");
 	Book book = bookRepository.getBookByISBN(isbn.get());
 	book.setStatus(status);
+	if(status.getValue().equals("lost")){
+		System.out.println(status);
+		apolloStomp.sendMessageToQueue(isbn.get());
+		//apolloStomp.sendMessageToQueue(connection, book.getIsbn());
+		//apolloStomp.endConnection(connection);
+	}
 
 	BookDto bookResponse = new BookDto(book);
 	String location = "/books/" + book.getIsbn();
@@ -105,6 +119,15 @@ public class BookResource {
 	bookResponse.addLink(new LinkDto("create-book", "/books", "POST"));
 
 	return bookResponse;
+    }
+    
+    @GET
+    @Path("/update")
+    @Timed(name="update-library")
+    public Response updateLib()throws JMSException,MalformedURLException{
+    	System.out.println("i am here in updatelib");
+    	apolloStomp.subscribeTopic();
+    	return Response.status(200).build();
     }
 }
 

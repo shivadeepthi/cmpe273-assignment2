@@ -10,6 +10,8 @@ import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 
 import de.spinscale.dropwizard.jobs.JobsBundle;
+import edu.sjsu.cmpe.procurement.Stomp.ApolloStomp;
+import edu.sjsu.cmpe.procurement.api.resources.ProcurementResource;
 import edu.sjsu.cmpe.procurement.api.resources.RootResource;
 import edu.sjsu.cmpe.procurement.config.ProcurementServiceConfiguration;
 
@@ -57,6 +59,13 @@ public class ProcurementService extends Service<ProcurementServiceConfiguration>
 	String topicName = configuration.getStompTopicPrefix();
 	log.debug("Queue name is {}. Topic is {}", queueName, topicName);
 	// TODO: Apollo STOMP Broker URL and login
-
+	String apolloUser=configuration.getApolloUser();
+	String apolloPassword=configuration.getApolloPassword();
+	String apolloHost=configuration.getApolloHost();
+	int apolloPort=configuration.getApolloPort();
+	//JerseyClientConfiguration jersyClient=configuration.getJerseyClientConfiguration();
+	ApolloStomp apolloStomp=new ApolloStomp(apolloUser, apolloPassword, apolloHost, apolloPort, queueName, topicName);
+	//environment.addResource(new ProcurementResource(jerseyClient,apolloStomp));
+	
     }
 }

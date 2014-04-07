@@ -22,9 +22,28 @@
 			<id>repo.codahale.com</id>
 			<url>http://repo.codahale.com/</url>
 		</repository>
+		<repository>
+			<id>Fusesource Snapshots</id>
+			<url>http://repo.fusesource.com/nexus/content/repositories/snapshots</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
+	<!-- mustache templating dependency -->
+	<dependency>
+	<groupId>org.juzu</groupId>
+	<artifactId>juzu-templating-mustache</artifactId>
+	<version>0.8.0</version>
+</dependency>
+            
+<!-- bootstrap maven dependency -->
+<dependency>
+	<groupId>com.efsavage.twitter.bootstrap</groupId>
+	<artifactId>bootstrap-maven</artifactId>
+	<version>2.3.1</version>
+</dependency>
+            
+            
 		<dependency>
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-core</artifactId>
@@ -34,6 +53,21 @@
 			<groupId>com.yammer.dropwizard</groupId>
 			<artifactId>dropwizard-views</artifactId>
 			<version>${dropwizard.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>javax.jms-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fusesource.stompjms</groupId>
+			<artifactId>stompjms-client</artifactId>
+			<version>1.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-jms_1.1_spec</artifactId>
+			<version>1.1</version>
 		</dependency>
 	</dependencies>
 
@@ -48,6 +82,19 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.fusesource.mvnplugins</groupId>
+				<artifactId>maven-uberize-plugin</artifactId>
+				<version>1.14</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>uberize</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

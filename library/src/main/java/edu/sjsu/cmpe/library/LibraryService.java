@@ -9,6 +9,7 @@ import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.views.ViewBundle;
 
+import edu.sjsu.cmpe.library.STOMP.ApolloStomp;
 import edu.sjsu.cmpe.library.api.resources.BookResource;
 import edu.sjsu.cmpe.library.api.resources.RootResource;
 import edu.sjsu.cmpe.library.config.LibraryServiceConfiguration;
@@ -41,12 +42,18 @@ public class LibraryService extends Service<LibraryServiceConfiguration> {
 		configuration.getLibraryName(), queueName,
 		topicName);
 	// TODO: Apollo STOMP Broker URL and login
+	String apolloUser=configuration.getApolloUser();
+	String apolloPassword=configuration.getApolloPassword();
+	String apolloHost=configuration.getApolloHost();
+	int apolloPort=configuration.getApolloPort();
+    String libraryName=configuration.getLibraryName();
 
 	/** Root API */
 	environment.addResource(RootResource.class);
 	/** Books APIs */
 	BookRepositoryInterface bookRepository = new BookRepository();
-	environment.addResource(new BookResource(bookRepository));
+	ApolloStomp apolloStomp=new ApolloStomp(apolloUser, apolloPassword, apolloHost, apolloPort, queueName, topicName, libraryName, bookRepository);
+	environment.addResource(new BookResource(bookRepository,apolloStomp));
 
 	/** UI Resources */
 	environment.addResource(new HomeResource(bookRepository));
