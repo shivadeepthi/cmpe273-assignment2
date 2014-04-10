@@ -3,6 +3,8 @@ package edu.sjsu.cmpe.library.api.resources;
 import java.net.MalformedURLException;
 
 
+
+import javax.jms.Connection;
 import javax.jms.JMSException;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -127,6 +129,7 @@ public class BookResource {
     public Response updateLib()throws JMSException,MalformedURLException{
     	System.out.println("i am here in updatelib");
     	apolloStomp.subscribeTopic();
+    	
     	return Response.status(200).build();
     }
 }
